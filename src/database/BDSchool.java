@@ -1,6 +1,4 @@
 package database;
-
-import entities.Etudiant;
 import entities.Utilisateur;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,6 +9,22 @@ import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class BDSchool {
     
@@ -19,128 +33,166 @@ public class BDSchool {
     private final String url ="jdbc:mysql://localhost:3306/journal";
     private String driver = "com.mysql.jdbc.Driver";
     private Connection connex;
+    public static String tokenDeConnexion;
     
-    public BDSchool(){
+    public String buildXMLRequest(String functionName, ArrayList<String> argumentNames, ArrayList<String> argumentValues) {
+        System.out.println("le token enregistre est: " + BDSchool.tokenDeConnexion);
+        String headerContent = "";
+        headerContent = "<token>" + BDSchool.tokenDeConnexion + "</token>";
         
-                try {
-                        Class.forName(driver);
-                        connex = DriverManager.getConnection(url, user, password);
-                        System.out.println("Connexion à la base de données réussie");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Echec de connexion à la base de données");
-                    }
-        
+        String base1 = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:hel=\"http://helloage.app.web.softwarepulse/\">" +
+                        "   <soapenv:Header>" + headerContent + "</soapenv:Header>" +
+                        "   <soapenv:Body>";
+        String base2 = "   </soapenv:Body>" +
+                        "</soapenv:Envelope>";
+        String functionTagPart1 = "<" + functionName + ">";
+        String functionTagPart2 = "</" + functionName + ">";
+        String argumentString = "";
+        for (int i = 0; i < argumentNames.size(); i++) {
+          argumentString += "<" +argumentNames.get(i) + ">";
+          argumentString += argumentValues.get(i);
+          argumentString += "</" +argumentNames.get(i) + ">";
+        }
+        String resultat = base1 + functionTagPart1 + argumentString + functionTagPart2 + base2;
+        System.out.println(resultat);
+        return resultat;
+    }
+    
+    public NodeList sendSoapRequest(String xmlInput, String functionName) {
+        String wsURL = "http://127.0.0.1:5000/soap";
+        URL url = null;
+        URLConnection connection = null;
+        HttpURLConnection httpConn = null;
+        String responseString = null;
+        String outputString="";
+        OutputStream out = null;
+        InputStreamReader isr = null;
+        BufferedReader in = null;
+        try
+        {
+            url = new URL(wsURL);
+            connection = url.openConnection();
+            httpConn = (HttpURLConnection) connection;
+ 
+            byte[] buffer = new byte[xmlInput.length()];
+            buffer = xmlInput.getBytes();
+ 
+            String SOAPAction = "";
+            // Set the appropriate HTTP parameters.
+             httpConn.setRequestProperty("Content-Length", String
+                     .valueOf(buffer.length));
+            httpConn.setRequestProperty("Content-Type",
+                    "text/xml; charset=utf-8");
+             
+             
+            httpConn.setRequestProperty("SOAPAction", SOAPAction);
+            httpConn.setRequestMethod("POST");
+            httpConn.setDoOutput(true);
+            httpConn.setDoInput(true);
+            out = httpConn.getOutputStream();
+            out.write(buffer);
+            out.close();
+             
+            // Read the response and write it to standard out.
+            isr = new InputStreamReader(httpConn.getInputStream());
+            in = new BufferedReader(isr);
+             
+            while ((responseString = in.readLine()) != null) 
+            {
+                outputString = outputString + responseString;
             }
+           // System.out.println(outputString);
+            //System.out.println("");
+             
+            // Get the response from the web service call
+            Document document = lireFixhierXML(outputString);
+             
+            NodeList nodeLst = document.getElementsByTagName("return");
+            String webServiceResponse = nodeLst.item(0).getTextContent();
+            //System.out.println("The response from the web service call is : " + webServiceResponse);
+            return nodeLst;
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+     private Document lireFixhierXML(String in) {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+             InputSource is = new InputSource(new StringReader(in));
+            return db.parse(is);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+ 
+    public BDSchool(){
+        //tokenDeConnexion = "";
+    }
     
     
    public boolean seConnecter(String login, String password)
    {
-       try  {
-           
-            String sql ="SELECT * FROM utilisateurs WHERE login= ? AND password= ?;";
-            PreparedStatement stm = connex.prepareStatement(sql);//Creer un objet pour preparer la requete SQL
-            stm.setString(1, login);//completer la requete en mettant la valeur du premier paramétre qui est login
-            stm.setString(2, password);//completer la requete en mettant la valur du scond paramétre qui est password
-            //Execution de la requete et récupération du resultat dans un Objet de type ResultSet
-            ResultSet rs = stm.executeQuery(); //Execute la requete
-            
-            if(rs.next())//Oui, La requete renvoi un resultat
-            {
-                System.out.println("L'utilisateur existe"); 
-                return true;
-            }
-            else{//Non, Aucun résultat trouvé
-                System.out.println("L'utilisateur n'existe pas"); 
-                return false;
-            }
-            
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+       ArrayList<String> argumentNames = new ArrayList<String>();
+       argumentNames.add("login");
+       argumentNames.add("password");
+       ArrayList<String> argumentValues = new ArrayList<String>();
+       argumentValues.add(login);
+       argumentValues.add(password);
+       NodeList result =  this.sendSoapRequest(this.buildXMLRequest("userLogin",argumentNames , argumentValues),"userLogin");
+       String token = result.item(0).getTextContent();
+       boolean res = false;
+       if (!token.contains("passe")) {
+           BDSchool.tokenDeConnexion = token;
+           res = true;
+       }
        
+       else res = false;
+       return res;
    } 
 
     public boolean ajouterUtilisateur(Utilisateur utilisateur){
         try {
-            String sql ="INSERT INTO utilisateurs(login, password, prenom, nom, profil) VALUES (?,?,?,?,?)";
-            PreparedStatement stm = connex.prepareStatement(sql);
-            stm.setString(1, utilisateur.getLogin());
-            stm.setString(2, utilisateur.getPassword());
-            stm.setString(3, utilisateur.getPrenom());
-            stm.setString(4, utilisateur.getNom());
-            stm.setString(5, utilisateur.getProfil());
-            stm.executeUpdate();//Inserer dans la table utilisateurs
+             ArrayList<String> utilisateurChamps = utilisateur.getAttributeArrayNoms();
+             ArrayList<String> utilisateurValeurs = utilisateur.getAttributeArray();
+             NodeList result = this.sendSoapRequest(this.buildXMLRequest("insertUser",utilisateurChamps , utilisateurValeurs),"insertUser");
+             System.out.print(result.item(0).getTextContent());
             return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); 
                 return false;
             }
     }
-     public int obtenirNombreDadministrateurs(){
-            try {
-                String sql ="SELECT count(*) as count FROM utilisateurs WHERE profil=?;";
-                PreparedStatement stm = connex.prepareCall(sql);
-                stm.setString(1, "Administrateur");
-                ResultSet rs = stm.executeQuery();
-                while(rs.next())
-            {
-               return rs.getInt("count");
-            }
-                
-            }
-            catch (Exception e) {
-                
-            }
-            return 0;
-        }
-               public int obtenirNombreDutilisateur(){
-            try {
-                String sql ="SELECT count(*) as count FROM utilisateurs WHERE profil!=?;";
-                PreparedStatement stm = connex.prepareCall(sql);
-                stm.setString(1, "Administrateur");
-                ResultSet rs = stm.executeQuery();
-                while(rs.next())
-            {
-               return rs.getInt("count");
-            }
-                
-            }
-            catch (Exception e) {
-                
-            }
-            return 0;
-        }
-
+    
     
     public boolean modifierUtilisateur(Utilisateur utilisateur){
-        try {
-            String sql ="UPDATE utilisateurs SET login=?,password=?, prenom=?, nom=?, profil=? WHERE id=?;";
-            PreparedStatement stm = connex.prepareStatement(sql);
-            stm.setString(1, utilisateur.getLogin());
-            stm.setString(2, utilisateur.getPassword());
-            stm.setString(3, utilisateur.getPrenom());
-            stm.setString(4, utilisateur.getNom());
-            stm.setString(5, utilisateur.getProfil());
-            stm.setInt(6, utilisateur.getId());//pour le where id
-            stm.executeUpdate();//Update dans la table utilisateurs
+       try {
+             ArrayList<String> utilisateurChamps = utilisateur.getAttributeArrayNoms();
+             ArrayList<String> utilisateurValeurs = utilisateur.getAttributeArray();
+             NodeList result = this.sendSoapRequest(this.buildXMLRequest("updateUser",utilisateurChamps , utilisateurValeurs),"updateUser");
+             System.out.print(result.item(0).getTextContent());
             return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); 
                 return false;
             }
     }
 
     public boolean supprimerUtilisateur(int id){
         try {
-            String sql ="DELETE FROM utilisateurs WHERE id=?;";
-            PreparedStatement stm = connex.prepareStatement(sql);
-            stm.setInt(1, id);//pour le where id
-            stm.executeUpdate();//Delete dans la table utilisateurs
+            ArrayList<String> argumentNames = new ArrayList<String>();
+            argumentNames.add("id");
+            ArrayList<String> argumentValues = new ArrayList<String>();
+            argumentValues.add(String.valueOf(id));
+            NodeList result = this.sendSoapRequest(this.buildXMLRequest("deleteUser",argumentNames , argumentValues),"deleteUser");
+            System.out.print(result.item(0).getTextContent());
             return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); 
                 return false;
             }
     }
@@ -150,92 +202,32 @@ public class BDSchool {
         
         try {
             
-            String sql ="SELECT * FROM utilisateurs;";
-            PreparedStatement stm = connex.prepareCall(sql);
-            ResultSet rs = stm.executeQuery();
-            
-            while(rs.next())
-            {
-                Vector v = new Vector();
-                v.add(rs.getInt("id"));
-                v.add(rs.getString("prenom"));
-                v.add(rs.getString("nom"));
-                v.add(rs.getString("login"));
-                v.add(rs.getString("profil"));
-                dftm.addRow(v);//remplir expl une ligne du tableau
+        NodeList users = this.sendSoapRequest(this.buildXMLRequest("getUsers", new ArrayList<String>(), new ArrayList<String>()),"getUsers");
+        NodeList actualUsers = users.item(0).getChildNodes();
+        for (int i =0; i< actualUsers.getLength(); i++)
+        {
+            NodeList userAttributes = actualUsers.item(i).getChildNodes();
+            Vector v = new Vector();
+            for (int j =0; j< userAttributes.getLength(); j++) {
+                if (j == 4) continue;
+               System.out.println("token " + tokenDeConnexion);
+               v.add(userAttributes.item(j).getTextContent());
             }
-            
-            jtUtilisateurs.setModel(dftm);//Chargment des colonnes et ligns sur le jtable
+            dftm.addRow(v);
+        }
+        jtUtilisateurs.setModel(dftm);//Chargment des colonnes et ligns sur le jtable
             
         } catch (Exception e) {
             e.printStackTrace();
         }
         
     }
-    
-        public void chargerUtilisateurByLogin(String login, DefaultTableModel dftm, JTable jtUtilisateurs){
-        
-        try {
-            
-            String sql ="SELECT * FROM utilisateurs WHERE login=?;";
-            PreparedStatement stm = connex.prepareCall(sql);
-            stm.setString(1, login);
-            ResultSet rs = stm.executeQuery();
-            
-            while(rs.next())
-            {
-                Vector v = new Vector();
-                v.add(rs.getInt("id"));
-                v.add(rs.getString("prenom"));
-                v.add(rs.getString("nom"));
-                v.add(rs.getString("login"));
-                v.add(rs.getString("profil"));
-                dftm.addRow(v);//remplir expl une ligne du tableau
-            }
-            
-            jtUtilisateurs.setModel(dftm);//Chargment des colonnes et ligns sur le jtable
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-    }
-        
-    public ArrayList<String> chargerFiliere(JComboBox cbFliere)
-    {
-        ArrayList<String> resultat = new ArrayList<String>();
-        try {
-            
-            cbFliere.removeAllItems();//Vider le comboBox
-            
-            //SELECT nom de(s) colonne(s) FROM NOM_DE_LA_TABLE 
-            String sql= "SELECT nom FROM formation;";
-            PreparedStatement stm = connex.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
-            //Parcourir les resultats si existants
-            while(rs.next())
-            {
-               String nom = rs.getString("nom");//récupére valeur à la colonne correspondante
-               resultat.add(nom);
-               cbFliere.addItem(nom); //Ajout dans le combobox
-               
-            }
-            
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resultat;
-    }
-    
-    
-        
-        
+      
     
     public static void main(String[] args) {
         
        BDSchool bd= new BDSchool();
-       bd.seConnecter("seck", "passer");
+       //bd.seConnecter("seck", "passer");
        
     }
 }

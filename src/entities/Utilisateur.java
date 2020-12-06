@@ -1,6 +1,8 @@
 
 package entities;
 
+import java.util.ArrayList;
+
 public class Utilisateur {
     
     private int id;
@@ -9,7 +11,26 @@ public class Utilisateur {
     private String prenom;
     private String nom;
     private String profil;
-
+    public ArrayList<String> getAttributeArray() {
+        ArrayList<String> resultat = new ArrayList<String>();
+        resultat.add(String.valueOf(this.getId()));
+        resultat.add(this.getLogin());
+        resultat.add(this.getPassword());
+        resultat.add(this.getNom());
+        resultat.add(this.getPrenom());
+        resultat.add(this.getProfil());
+        return resultat;
+    }
+     public ArrayList<String> getAttributeArrayNoms() {
+        ArrayList<String> resultat = new ArrayList<>();
+        resultat.add("id");
+        resultat.add("login");
+        resultat.add("password");
+        resultat.add("nom");
+        resultat.add("prenom");
+        resultat.add("type");
+        return resultat;
+    }
     public int getId() {
         return id;
     }

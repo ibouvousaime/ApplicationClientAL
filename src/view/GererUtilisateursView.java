@@ -1,8 +1,3 @@
-*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import database.BDSchool;
@@ -37,7 +32,6 @@ public class GererUtilisateursView extends javax.swing.JFrame {
         dftm.setColumnIdentifiers(tab); 
         BDSchool bd = new BDSchool();
         String login = txtRechercher.getText().toString();
-        bd.chargerUtilisateurByLogin(login, dftm, jtUtilisateurs); 
     }
     
     public GererUtilisateursView() {
@@ -440,12 +434,7 @@ public class GererUtilisateursView extends javax.swing.JFrame {
 
     private void btnStatistiquesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatistiquesActionPerformed
         // TODO add your handling code here:
-        
-      Statistiques demo = new Statistiques( "Statistiques" );  
-      demo.setSize( 560 , 367 );    
-      RefineryUtilities.centerFrameOnScreen( demo );
-      
-      demo.setVisible( true ); 
+
         
     }//GEN-LAST:event_btnStatistiquesActionPerformed
 

@@ -18,7 +18,7 @@ public class LoginView extends javax.swing.JFrame {
      * Creates new form LoginView
      */
     public LoginView() {
-        
+        BDSchool bd = new BDSchool();
         initComponents();
         setResizable(false);// 
         setLocationRelativeTo(this); 
@@ -154,15 +154,13 @@ public class LoginView extends javax.swing.JFrame {
 JOptionPane.showMessageDialog(this,"Veuillez renseigner les champs","Authentification", JOptionPane.WARNING_MESSAGE);
         }
         else{
-            //AccueilView ac = new AccueilView();
-            //ac.setVisible(true); 
             
             BDSchool bd = new BDSchool();
             boolean result = bd.seConnecter(login, password);
             
             if(result)//Le login et le password existent dans la table utilisateurs
             {
-                new AccueilView().setVisible(true);
+                new GererUtilisateursView().setVisible(true);
                 dispose(); 
             }
             else//Le login et/ou le password n'existent pas dans la table utilisateurs
