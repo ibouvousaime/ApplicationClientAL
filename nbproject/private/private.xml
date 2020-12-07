@@ -12,21 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/image4.jpg</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/view/GererUtilisateursView.java</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/close.png</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/image3.jpg</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/image1.jpg</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/connexion_header.png</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/ajouter.png</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/images5.jpg</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/view/LoginView.java</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/view/AccueilView.java</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/entities/Utilisateur.java</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/images/image2.jpg</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/database/BDSchool.java</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/view/GererEtudiants.java</file>
-            <file>file:/C:/Users/ProBook/Documents/NetBeansProjects/Interface/Interface/src/view/CreerEtudiants.java</file>
+            <file>file:/W:/Interface/src/database/BDSchool.java</file>
+            <file>file:/W:/Interface/src/entities/Utilisateur.java</file>
+            <file>file:/W:/Interface/src/view/GererUtilisateursView.java</file>
+            <file>file:/W:/Interface/src/view/LoginView.java</file>
         </group>
     </open-files>
 </project-private>

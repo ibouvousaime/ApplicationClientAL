@@ -16,7 +16,7 @@ public class GererUtilisateursView extends javax.swing.JFrame {
      * Creates new form GererUtilisateursView
      */
     
-    private String tab[] = {"ID", "Prénom", "Nom", "Identifiant", "Profil"};
+    private String tab[] = {"ID", "Nom","Prénom", "Identifiant", "Profil"};
     private DefaultTableModel dftm;
     
     public void chargerToutUtilisateurs(){
@@ -26,13 +26,7 @@ public class GererUtilisateursView extends javax.swing.JFrame {
         bd.chargerUtilisateurs(dftm, jtUtilisateurs); 
     }
     
-    public void chargerUtilisateurByLogin(){
-        
-        dftm = new DefaultTableModel();
-        dftm.setColumnIdentifiers(tab); 
-        BDSchool bd = new BDSchool();
-        String login = txtRechercher.getText().toString();
-    }
+ 
     
     public GererUtilisateursView() {
         initComponents();
@@ -63,7 +57,6 @@ public class GererUtilisateursView extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         txtPrenom = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtNom = new javax.swing.JTextField();
@@ -78,21 +71,21 @@ public class GererUtilisateursView extends javax.swing.JFrame {
         btnSupprimer = new javax.swing.JButton();
         btnAjouter = new javax.swing.JButton();
         btnModifier = new javax.swing.JButton();
-        txtRechercher = new javax.swing.JTextField();
-        btnRechercher = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtUtilisateurs = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         btnQuitter = new javax.swing.JButton();
-        btnStatistiques = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("Gerer Utilisateurs");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel2.setText("Login");
+        txtPrenom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrenomActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel3.setText("Nom");
@@ -139,14 +132,6 @@ public class GererUtilisateursView extends javax.swing.JFrame {
             }
         });
 
-        btnRechercher.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnRechercher.setText("Rechercher");
-        btnRechercher.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRechercherActionPerformed(evt);
-            }
-        });
-
         jtUtilisateurs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -180,14 +165,6 @@ public class GererUtilisateursView extends javax.swing.JFrame {
         btnQuitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/close.png"))); // NOI18N
         btnQuitter.setText("Quitter");
 
-        btnStatistiques.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnStatistiques.setText("Statistiques");
-        btnStatistiques.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStatistiquesActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -216,19 +193,11 @@ public class GererUtilisateursView extends javax.swing.JFrame {
                         .addComponent(btnSupprimer, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(txtRechercher, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(90, 90, 90)
-                        .addComponent(btnRechercher, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(149, 149, 149)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnQuitter)
-                        .addGap(28, 28, 28)
-                        .addComponent(btnStatistiques, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(btnQuitter))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(277, 277, 277)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -237,17 +206,12 @@ public class GererUtilisateursView extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtRechercher, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRechercher, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(10, 10, 10)
+                        .addGap(61, 61, 61)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addGap(41, 41, 41)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,12 +240,11 @@ public class GererUtilisateursView extends javax.swing.JFrame {
                                 .addGap(30, 30, 30)
                                 .addComponent(cbProfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(57, 57, 57)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnModifier, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(btnSupprimer, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnQuitter, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnStatistiques, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))))
+                                        .addComponent(btnQuitter, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -424,19 +387,9 @@ public class GererUtilisateursView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSupprimerActionPerformed
 
-    private void btnRechercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRechercherActionPerformed
-        
-        if(txtRechercher.getText().toString().trim().equals(""))
-            chargerToutUtilisateurs();
-        else
-            chargerUtilisateurByLogin();
-    }//GEN-LAST:event_btnRechercherActionPerformed
-
-    private void btnStatistiquesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatistiquesActionPerformed
+    private void txtPrenomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrenomActionPerformed
         // TODO add your handling code here:
-
-        
-    }//GEN-LAST:event_btnStatistiquesActionPerformed
+    }//GEN-LAST:event_txtPrenomActionPerformed
 
     /**
      * @param args the command line arguments
@@ -477,12 +430,9 @@ public class GererUtilisateursView extends javax.swing.JFrame {
     private javax.swing.JButton btnAjouter;
     private javax.swing.JButton btnModifier;
     private javax.swing.JButton btnQuitter;
-    private javax.swing.JButton btnRechercher;
-    private javax.swing.JButton btnStatistiques;
     private javax.swing.JButton btnSupprimer;
     private javax.swing.JComboBox<String> cbProfil;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -497,6 +447,5 @@ public class GererUtilisateursView extends javax.swing.JFrame {
     private javax.swing.JTextField txtNom;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPrenom;
-    private javax.swing.JTextField txtRechercher;
     // End of variables declaration//GEN-END:variables
 }

@@ -78,7 +78,6 @@ public class BDSchool {
             buffer = xmlInput.getBytes();
  
             String SOAPAction = "";
-            // Set the appropriate HTTP parameters.
              httpConn.setRequestProperty("Content-Length", String
                      .valueOf(buffer.length));
             httpConn.setRequestProperty("Content-Type",
@@ -93,7 +92,6 @@ public class BDSchool {
             out.write(buffer);
             out.close();
              
-            // Read the response and write it to standard out.
             isr = new InputStreamReader(httpConn.getInputStream());
             in = new BufferedReader(isr);
              
@@ -101,15 +99,11 @@ public class BDSchool {
             {
                 outputString = outputString + responseString;
             }
-           // System.out.println(outputString);
-            //System.out.println("");
-             
-            // Get the response from the web service call
+
             Document document = lireFixhierXML(outputString);
              
             NodeList nodeLst = document.getElementsByTagName("return");
             String webServiceResponse = nodeLst.item(0).getTextContent();
-            //System.out.println("The response from the web service call is : " + webServiceResponse);
             return nodeLst;
         } 
         catch (Exception e) 
